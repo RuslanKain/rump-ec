@@ -1,0 +1,1 @@
+--neurons = 307||layers = 4||lookback = 3||dropout = 0.2||learning rate = 0.0051953239143551965||epochs = 43||batch_size = 99||number of lstm/conv1d layers = 4||number of pool size = 4||activation function = linear||optimizer = Adamax||model type = with conv--

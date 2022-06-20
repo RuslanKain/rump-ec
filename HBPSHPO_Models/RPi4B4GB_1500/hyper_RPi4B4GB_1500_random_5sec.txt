@@ -1,0 +1,1 @@
+--neurons = 444||layers = 3||lookback = 1||dropout = 0.4||learning rate = 0.014755951394804841||epochs = 157||batch_size = 878||number of lstm/conv1d layers = 1||number of pool size = 2||activation function = linear||optimizer = Nadam||model type = with lstm--

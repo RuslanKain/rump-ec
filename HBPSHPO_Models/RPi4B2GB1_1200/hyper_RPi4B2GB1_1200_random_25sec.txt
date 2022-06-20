@@ -1,0 +1,17 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+--neurons = 260||layers = 1||lookback = 9||dropout = 0.3||learning rate = 0.19678983634014274||epochs = 186||batch_size = 359||number of lstm/conv1d layers = 3||number of pool size = 1||activation function = tanh||optimizer = SGD||model type = with conv--
+=======
+--neurons = 408||layers = 3||lookback = 7||dropout = 0.0||learning rate = 0.07971804506106997||epochs = 132||batch_size = 627||number of lstm/conv1d layers = 1||number of pool size = 3||activation function = sigmoid||optimizer = Adam||model type = with lstm--
+>>>>>>> 4afdb822339a77046e14c38ed4a1ce3b86f3a3b1
+=======
+--neurons = 408||layers = 3||lookback = 7||dropout = 0.0||learning rate = 0.07971804506106997||epochs = 132||batch_size = 627||number of lstm/conv1d layers = 1||number of pool size = 3||activation function = sigmoid||optimizer = Adam||model type = with lstm--
+>>>>>>> 4afdb822339a77046e14c38ed4a1ce3b86f3a3b1
+=======
+--neurons = 408||layers = 3||lookback = 7||dropout = 0.0||learning rate = 0.07971804506106997||epochs = 132||batch_size = 627||number of lstm/conv1d layers = 1||number of pool size = 3||activation function = sigmoid||optimizer = Adam||model type = with lstm--
+>>>>>>> 4afdb822339a77046e14c38ed4a1ce3b86f3a3b1
+=======
+--neurons = 408||layers = 3||lookback = 7||dropout = 0.0||learning rate = 0.07971804506106997||epochs = 132||batch_size = 627||number of lstm/conv1d layers = 1||number of pool size = 3||activation function = sigmoid||optimizer = Adam||model type = with lstm--
+>>>>>>> 4afdb822339a77046e14c38ed4a1ce3b86f3a3b1

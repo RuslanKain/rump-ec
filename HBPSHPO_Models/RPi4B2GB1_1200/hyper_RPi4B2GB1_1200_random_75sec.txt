@@ -1,0 +1,1 @@
+--neurons = 337||layers = 3||lookback = 27||dropout = 0.2||learning rate = 0.024405230694469347||epochs = 185||batch_size = 964||number of lstm/conv1d layers = 3||number of pool size = 1||activation function = linear||optimizer = Adagrad||model type = with lstm--

@@ -1,0 +1,1 @@
+--neurons = 259||layers = 4||lookback = 11||dropout = 0.4||learning rate = 0.0015330518468575209||epochs = 59||batch_size = 214||number of lstm/conv1d layers = 3||number of pool size = 2||activation function = tanh||optimizer = RMSprop||model type = with conv--

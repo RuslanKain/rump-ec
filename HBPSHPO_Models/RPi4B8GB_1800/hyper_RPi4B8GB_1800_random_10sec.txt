@@ -1,0 +1,1 @@
+--neurons = 314||layers = 2||lookback = 2||dropout = 0.5||learning rate = 0.001||epochs = 119||batch_size = 407||number of lstm/conv1d layers = 5||number of pool size = 4||activation function = linear||optimizer = RMSprop||model type = with lstm--

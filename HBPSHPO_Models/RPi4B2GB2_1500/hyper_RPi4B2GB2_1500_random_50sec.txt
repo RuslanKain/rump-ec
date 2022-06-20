@@ -1,0 +1,1 @@
+--neurons = 500||layers = 5||lookback = 19||dropout = 0.0||learning rate = 0.01436873959473154||epochs = 169||batch_size = 274||number of lstm/conv1d layers = 5||number of pool size = 2||activation function = linear||optimizer = SGD||model type = with conv--
