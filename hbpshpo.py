@@ -31,7 +31,6 @@ from skopt.space import Categorical, Real
 from skopt.utils import use_named_args
 from skopt import gp_minimize
 
-from util import *
 from tqdm import tqdm
 
 #%%
@@ -260,45 +259,15 @@ def build_model(activationFunction, optimizer):
                 metrics=['mae', 'mse'])
   return model, typeOfModel
   
-def plot_pred_obs(pred_data, obs_data, title, unit, type, rpi, method, filter, save = False):
-  fig = plt.figure()
-  ax = fig.add_subplot(111)
-  ax.plot(pred_data,label = 'Predicted', color = 'red')
-  ax.plot(obs_data,label = 'Observed', color = 'blue')
-  ax.set_title(method +' - '+ title)#, color = 'white')
-  ax.grid()
-  ax.legend(loc='best')
-  #ax.tick_params(axis='x', colors='white')
-  #ax.tick_params(axis='y', colors='white')
-  #ax.yaxis.label.set_color('white')
-  #ax.xaxis.label.set_color('white')
-  ax.set_xlabel('Datapoint')#, color = 'white')
-  ax.set_ylabel(unit)#, color = 'white')
-  if save == True:
-    if filter == 1:
-      f_path = 'Non Filtered'
-    else:
-      f_path = 'Filtered'
-    plt_name = title.replace(" ", "_")
-    try:
-      os.makedirs(r"figures/{}/{}/{}/{} Step/{}".format(type,rpi,method,lookahead,f_path))
-    except:
-      pass
-    save_path = r"figures/{}/{}/{}/{} Step/{}/{}_{}step_{}ma.png".format(type,rpi,method,lookahead,f_path,plt_name,lookahead,filter) 
-    plt.savefig(save_path)
-  else:
-    plt.show()
 
 #%%
-
+""" Hybrid PSO & BO Hyperparam. Optimization """
 global activationFunction, optimizer
 dimensions  = [Categorical(['tanh','sigmoid','linear','relu'], name='activationFunction'), #Search space, all parameters are nomminal
               Categorical(['RMSprop', 'Adam', 'SGD', 'Adagrad', 'Adadelta', 'Adamax', 'Nadam'], name='optimizer')]
 defact = ['tanh','sigmoid','linear','relu']
 defopt =  ['RMSprop', 'Adam', 'SGD', 'Adagrad', 'Adadelta', 'Adamax', 'Nadam']
 default_parameters = [random.choice(defact), random.choice(defopt)]
-
-#%%
 
 @use_named_args(dimensions=dimensions) #Combine Objective function with its search space
 def gp_minimize_opt_function(activationFunction, optimizer):
@@ -382,26 +351,23 @@ def pso_opt_fun(x):
 
 
 #%%
-#model_name = 'paper_data'
-#mydatasetfile = 'https://docs.google.com/uc?export=download&id=1XhbneHtO6R5b2XD401J6kcfccMdl0c1f'
-
-#%%
-
+""" Designate Training Dataset and Step-Ahead Sizes"""
 import warnings
 warnings.filterwarnings('ignore', message='The objective has been evaluated at this point before.')
 
-lookahead_list = [5,15]
+lookahead_list = [1,2,5,10,15,30,60]
 
+#
 rpi_name = 'RPi4B8GB_1800' #RPi4B8GB_1800, RPi4B4GB_1500, RPi4B2GB2_1500, RPi4B2GB1_1200
-data_seq = 'pattern' #random, pattern
-data_num = '' # _2, _3, _4
+data_seq = 'random' #random, pattern
+data_num = '_2' # _2, _3, _4
 
 OLD_drop_lst = ['time_stamp','top_cpu_process','top_memory_process','running_cpu_process','label_running','label_top_cpu']
-drop_lst =  ['time_stamp', 'link_quality', 'wifi_freq', 'link_quality_max', 'state', 'predicted', 'label']
+drop_lst =  ['time_stamp', 'link_quality', 'wifi_freq', 'link_quality_max', 'state', 'predicted']#, 'label']
 
-#x0=neurons, x1=layers, x2=lookback
-#x3=dropout, x4=learning rate, x5=epochs
-#x6=batch_size, x7=number of lstm/conv1d layers, x8=pool_size
+#%%
+""" Train N_Models (refer to paper for details) and save a model for each Step-Ahead Size (in lookahead_list) """
+
 for lookahead in lookahead_list:
   
   print(f'Training for {lookahead} step prediction on {rpi_name}_{data_seq}{data_num}')
@@ -418,39 +384,45 @@ for lookahead in lookahead_list:
   bayes_time=0
 
   model_name = f'{rpi_name}_{data_seq}_{lookahead*5}sec'
-  
 
+  mydatasetfile = f"data/{rpi_name.split('_')[0]}/{rpi_name}MHz_res_usage_data_train_pred_rvp_{data_seq}_48hr{data_num}.csv"
+  #lower-bounds and upper-bounds of hyperparameters
+
+  #x0=neurons, x1=layers, x2=lookback
+  #x3=dropout, x4=learning rate, x5=epochs
+  #x6=batch_size, x7=number of lstm/conv1d layers, x8=pool_size
+  
   lb = [1, 1, lookahead, 0.0, 0.001, 20, 1, 1, 1]
   ub = [512, 5, lookahead*2, 0.5, 0.2, 200, 1000, 5, 5]
 
-  
-  mydatasetfile = f"data/{rpi_name.split('_')[0]}/{rpi_name}MHz_res_usage_data_train_pred_rvp_{data_seq}_48hr{data_num}.csv"
-  
+  #train-test split size, 80%
   eval_split = 0.80
+
+
   dataset_name = mydatasetfile.split("/")[-1]
   dataset, scaler, cpu_user_column, cpu_system_column, cpu_idle_column, ram_column = data_preparation(mydatasetfile,drop_lst)
   dataframe = pd.read_csv(mydatasetfile, engine='python')
   dataframe = dataframe.drop(drop_lst, axis=1)
   dataframe = dataframe.fillna(0)
-
-  training_flag = 1
-
-  """first attempt"""
-  
+   
   try:
     start = time.time()
 
-    xopt, fopt = pso(pso_opt_fun, lb, ub, swarmsize=10, omega=1, phip=0.5, phig=1.0, maxiter=10, minstep=2, minfunc=0.00015)
-    mytime=time.time()-start
-    print ("Best position"+str(xopt))
-    print ("Loss:" + str(fopt))
-    print('Training time:',mytime)
+    xopt, fopt = pso(pso_opt_fun, lb, ub, swarmsize=10, omega=1, phip=0.5, phig=1.0, maxiter=10, minstep=2, minfunc=0.00015, debug = True)
+    
   except:
     print(f'{lookahead} steps finished for {rpi_name}')
 
+mytime=time.time()-start
+print ("Best position"+str(xopt))
+print ("Loss:" + str(fopt))
+print('Training time:',mytime)
+
 #%%
+"""Designate Test data"""
+
 lookahead_list = [1,2,5,10,15,30,60]
-rpi_name = 'RPi4B8GB_1800' #RPi4B8GB_1800, RPi4B4GB_1500, RPi4B2GB2_1500, RPi4B2GB1_1200
+rpi_name = 'RPi4B2GB1_1200' #RPi4B8GB_1800, RPi4B4GB_1500, RPi4B2GB2_1500, RPi4B2GB1_1200
 data_seq = 'pattern' #pattern
 data_num = '' # _2, _3, _4
 
@@ -466,7 +438,9 @@ for i in lookahead_list:
 mydatasetfile = f"data/{rpi_name.split('_')[0]}/{rpi_name}MHz_res_usage_data_test_pred_rvp_{data_seq}_48hr{data_num}.csv"
 
 #%%
-lookahead_list = [5,15]
+"""Infer on test data"""
+
+lookahead_list = [1,2,5,10,15,30,60]
 
 for lookahead in lookahead_list:
   print(f'testing {rpi_name} model for {lookahead} step lookahead')
@@ -513,9 +487,6 @@ for lookahead in lookahead_list:
   print('PSO results using', dataset_name, 'as dataset')
 
   print('Single inference time: %.3f s	batch inference time: %.3f s ' % (infS, infB))
-  #if training_flag == 1:
-    #print('Best mse: %.6f	mae: %.6f	rmse: %.6f	training time: %.0f s' % (mse, mae, sqrt(mse), mytime))
-  #  print('DeepLearning,',mytime,',',',',infS,',',infB,',',sqrt(mse_cpu_user),',',mae_cpu_user,',',sqrt(mse_cpu_system),',',mae_cpu_system,',',sqrt(mse_cpu_idle),',',mae_cpu_idle,',',math.sqrt(mse_ram),',',mae_ram, file=open('results_{}.csv'.format(model_name),'a'))
 
   print('User CPU mae: %.6f User CPU rmse: %.6f' % (round(mean_absolute_error(obs_dict['cpu_user_time_diff_observations'],obs_dict['cpu_user_time_diff_predicted_observations']),3), round(sqrt(mean_squared_error(obs_dict['cpu_user_time_diff_observations'], obs_dict['cpu_user_time_diff_predicted_observations'])),3)))
   print('System CPU mae: %.6f System CPU rmse: %.6f' % (round(mean_absolute_error(obs_dict['cpu_system_time_diff_observations'],obs_dict['cpu_system_time_diff_predicted_observations']),3), round(sqrt(mean_squared_error(obs_dict['cpu_system_time_diff_observations'],obs_dict['cpu_system_time_diff_predicted_observations'])),3)))
@@ -534,182 +505,3 @@ for lookahead in lookahead_list:
   pd.DataFrame(save).to_csv(r"Results/{}/HBPSHPO_Error_Results_{}.csv".format(rpi_name.split('_')[0],model_name))
   pd.DataFrame(obs_dict).to_csv(r"Results/{}/HBPSHPO_Results_{}.csv".format(rpi_name.split('_')[0],model_name))
 
-
-# %%
-"""Get prediction figures"""
-
-rpi_name = 'RPi4B2GB2_1500' #RPi4B8GB_1800, RPi4B4GB_1500, RPi4B2GB2_1500, RPi4B2GB1_1200
-data_seq = 'random' # random, pattern
-data_num = '' # _2, _3, _4
-method = 'HBPSHPO' # HBPSHPO, HSMM
-lookahead_list = []
-filter = 25 # 1, 25, 50, 100
-
-for lookahead in lookahead_list:
-  print(f"{method} figures for {rpi_name}_{data_seq}{data_num} for {lookahead} step")
-  model_name = f'{rpi_name}_{data_seq}_{lookahead*5}sec'
-  if method == 'HSMM':
-    obs_dict = pd.read_csv(f"Results/{rpi_name.split('_')[0]}/HSMM_Results_rvp_{data_seq}_48hr{data_num}_1500sec_lb_{lookahead*5}sec_pw.csv")
-  elif method == 'HBPSHPO' == 1:
-    obs_dict = pd.read_csv(f"Results/{rpi_name.split('_')[0]}/HBPSHPO_Results_{model_name}.csv")
-
-  user_cpu_obs, user_cpu_pred_obs = [], []
-  system_cpu_obs, system_cpu_pred_obs = [], []
-  idle_cpu_obs, idle_cpu_pred_obs = [], []
-  ram_obs, ram_pred_obs = [], []
-  #label_obs, label_pred_obs = [], []
-  #net_sent_obs, net_sent_pred_obs = [], []
-  
-
-  for i in range(0,len(obs_dict),lookahead):
-    if True:
-      user_cpu_obs.extend(loads(obs_dict['cpu_user_time_diff_observations'][i]))
-      user_cpu_pred_obs.extend(loads(obs_dict['cpu_user_time_diff_predicted_observations'][i]))
-      system_cpu_obs.extend(loads(obs_dict['cpu_system_time_diff_observations'][i]))
-      system_cpu_pred_obs.extend(loads(obs_dict['cpu_system_time_diff_predicted_observations'][i]))
-      idle_cpu_obs.extend(loads(obs_dict['cpu_idle_time_diff_observations'][i]))
-      idle_cpu_pred_obs.extend(loads(obs_dict['cpu_idle_time_diff_predicted_observations'][i]))
-      #net_sent_obs.extend(loads(obs_dict['net_sent_diff_observations'][i]))
-      #net_sent_pred_obs.extend(loads(obs_dict['net_sent_diff_predicted_observations'][i]))
-      ram_obs.extend(loads(obs_dict['memory_observations'][i]))
-      ram_pred_obs.extend(loads(obs_dict['memory_predicted_observations'][i]))
-      #label_obs.extend(loads(obs_dict['label_observations'][i]))
-      #label_pred_obs.extend(loads(obs_dict['label_predicted_observations'][i]))
-    else:
-      user_cpu_obs.extend(obs_dict['cpu_user_time_diff_observations'][i])
-      user_cpu_pred_obs.extend(obs_dict['cpu_user_time_diff_predicted_observations'][i])
-      system_cpu_obs.extend(obs_dict['cpu_system_time_diff_observations'][i])
-      system_cpu_pred_obs.extend(obs_dict['cpu_system_time_diff_predicted_observations'][i])
-      idle_cpu_obs.extend(obs_dict['cpu_idle_time_diff_observations'][i])
-      idle_cpu_pred_obs.extend(obs_dict['cpu_idle_time_diff_predicted_observations'][i])
-      #net_sent_obs.extend(obs_dict['net_sent_diff_observations'][i])
-      #net_sent_pred_obs.extend(obs_dict['net_sent_diff_predicted_observations'][i])
-      ram_obs.extend(obs_dict['memory_observations'][i])
-      ram_pred_obs.extend(obs_dict['memory_predicted_observations'][i])
-      #label_obs.extend(obs_dict['label_observations'][i])
-      #label_pred_obs.extend(obs_dict['label_predicted_observations'][i])
-
-  plot_pred_obs(uniform_filter1d(user_cpu_pred_obs, size=filter),uniform_filter1d(user_cpu_obs, size=filter) , 'CPU User Time', 'Seconds', data_seq + data_num, rpi_name.split('_')[0], method, filter, False)
-  plot_pred_obs(uniform_filter1d(system_cpu_pred_obs, size=filter), uniform_filter1d(system_cpu_obs, size=filter) , 'CPU System Time', 'Seconds', data_seq + data_num, rpi_name.split('_')[0], method, filter, False)
-  plot_pred_obs(uniform_filter1d(idle_cpu_pred_obs, size=filter), uniform_filter1d(idle_cpu_obs, size=filter), 'CPU Idle Time', 'Seconds', data_seq + data_num, rpi_name.split('_')[0], method, filter, False)
-  plot_pred_obs(uniform_filter1d(ram_pred_obs, size=filter), uniform_filter1d(ram_obs, size=filter), 'RAM', 'Memory (%)', data_seq + data_num, rpi_name.split('_')[0], method, filter, False)
-  #plot_pred_obs(uniform_filter1d(net_sent_pred_obs, size=filter) , uniform_filter1d(net_sent_obs, size=filter), 'Network Upload', 'Bytes', method, filter, True)
-
-# %%
-plt.rcParams.update({'font.size': 20})
-
-def mk_groups(data):
-  try:
-      newdata = data.items()
-  except:
-      return
-
-  thisgroup = []
-  groups = []
-  for key, value in newdata:
-      newgroups = mk_groups(value)
-      if newgroups is None:
-          thisgroup.append((key, value))
-      else:
-          thisgroup.append((key, len(newgroups[-1])))
-          if groups:
-              groups = [g + n for n, g in zip(newgroups, groups)]
-          else:
-              groups = newgroups
-  return [thisgroup] + groups
-
-def add_line(ax, xpos, ypos):
-  line = plt.Line2D([xpos, xpos], [ypos + .1, ypos],
-                    transform=ax.transAxes, color='black')
-  line.set_clip_on(False)
-  ax.add_line(line)
-
-def label_group_bar(ax, mae_data, rmse_data):
-  
-  mae_groups, rmse_groups = mk_groups(mae_data), mk_groups(rmse_data)
-  mae_xy, rmse_xy = mae_groups.pop(), rmse_groups.pop()
-  mae_x, mae_y = zip(*mae_xy)
-  rmse_x, rmse_y = zip(*rmse_xy)
-  mae_ly, rmse_ly = len(mae_y), len(rmse_y)
-  mae_xticks, rmse_xticks = np.arange(1, mae_ly + 1), np.arange(1, mae_ly + 1)
-
-
-  mae_bars = ax.bar(mae_xticks, mae_y, align='center',color='green', label = 'MAE')
-  rmse_bars = ax.bar(rmse_xticks, rmse_y, bottom = mae_y, align='center',color='orange', label = "RMSE")
-
-  hatches = ['','/']*7
-
-  for i in range(len(mae_bars)):
-    mae_bars[i].set(hatch = hatches[i])
-    rmse_bars[i].set(hatch = hatches[i])
-
-  ax.set_xticks(mae_xticks)
-  #ax.set_xticklabels(mae_x)
-  ax.set_xlim(.5, mae_ly + .5)
-  ax.yaxis.grid(True)
-
-  scale = 1. / mae_ly
-  for pos in range(mae_ly + 1):
-      add_line(ax, pos * scale, -.1)
-  ypos = -.2
-  while mae_groups:
-      group = mae_groups.pop()
-      pos = 0
-      for label, rpos in group:
-          lxpos = (pos + .5 * rpos) * scale
-          if 'step' in label:
-            ax.text(lxpos, ypos, label, ha='center', transform=ax.transAxes)
-          else:
-            ax.text(lxpos, ypos, label, ha='center', transform=ax.transAxes, rotation=90)
-          add_line(ax, pos * scale, ypos)
-          pos += rpos
-      add_line(ax, pos * scale, ypos)
-      ypos -= .1
-
-# %%
-"""Get error figures"""
-
-rpi_name = 'RPi4B2GB2_1500' #RPi4B8GB_1800, RPi4B4GB_1500, RPi4B2GB2_1500, RPi4B2GB1_1200
-data_seq = 'random' # random, pattern
-data_num = '' # _2, _3, _4
-
-lookahead_list = [1,2,5,10,15,30,60]
-HSMM_error_list, HBPSHPO_error_list = [], []
-
-
-HSMM_columns = ['cpu_user_time_diff_mae','cpu_user_time_diff_rmse','cpu_system_time_diff_mae','cpu_system_time_diff_rmse','cpu_idle_time_diff_mae','cpu_idle_time_diff_rmse','memory_mae','memory_rmse']
-HBPSHPO_columns = ['User CPU mae','User CPU rmse','System CPU mae','System CPU rmse','Idle CPU mae','Idle CPU rmse','RAM mae','RAM rmse']
-Resources = {'User CPU Time':['cpu_user_time_diff_mae','cpu_user_time_diff_rmse','User CPU mae','User CPU rmse'],
-             'System CPU Time':['cpu_system_time_diff_mae','cpu_system_time_diff_rmse','System CPU mae','System CPU rmse'],
-             'Idle CPU Time':['cpu_idle_time_diff_mae','cpu_idle_time_diff_rmse', 'Idle CPU mae','Idle CPU rmse'],
-             'Memory %':['memory_mae','memory_rmse','RAM mae','RAM rmse']}
-
-for res in Resources:
-  mae_data_dict, rmse_data_dict = {}, {}
-  for lookahead in lookahead_list:
-
-    mae_data_dict[f"{lookahead} step"] = {}
-    rmse_data_dict[f"{lookahead} step"] = {}
-
-
-    print(f"Error figures for {rpi_name}_{data_seq}{data_num} for {lookahead} step")
-
-    model_name = f'{rpi_name}_{data_seq}_{lookahead*5}sec'
-
-    HSMM_temp = pd.read_csv(f"Results/{rpi_name.split('_')[0]}/HSMM_Error_Results_rvp_{data_seq}_48hr{data_num}_1500sec_lb_{lookahead*5}sec_pw.csv")
-    HBPSHPO_temp = pd.read_csv(f"Results/{rpi_name.split('_')[0]}/HBPSHPO_Error_Results_{model_name}.csv")
-
-    mae_data_dict[f"{lookahead} step"]['HSMM'] = HSMM_temp[Resources[res][0]]
-    mae_data_dict[f"{lookahead} step"]['HBPSHPO'] = HBPSHPO_temp[Resources[res][2]]
-    rmse_data_dict[f"{lookahead} step"]['HSMM'] = HSMM_temp[Resources[res][1]]
-    rmse_data_dict[f"{lookahead} step"]['HBPSHPO'] = HBPSHPO_temp[Resources[res][3]]
-
-  fig = plt.figure(figsize=(14,14))
-  ax = fig.add_subplot(1,1,1)
-  ax.set_title(res)
-  label_group_bar(ax, mae_data_dict, rmse_data_dict)
-  plt.legend(loc='best')
-  fig.subplots_adjust(bottom=0.3)
-  fig.savefig(r"figures/{}/{}/{} Error Plot.png".format(data_seq + data_num,rpi_name.split('_')[0], res))
-  plt.show()
-# %%
