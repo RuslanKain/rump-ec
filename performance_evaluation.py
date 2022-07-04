@@ -342,8 +342,6 @@ plt.grid()
 plt.yticks(np.arange(-30, 175, 10))
 plt.show()
 
-# %%
-
 #%%
 
 
@@ -359,8 +357,8 @@ lookback = 300
 """Prepare data dict"""
 for device in data_associations_dict:
     for model in model_names:
-        data_associations_dict[device]['train_data'][model] = (pd.read_csv(f"data/{device}_{data_associations_dict[device]['freq']}MHz_res_usage_data_train_pred_{model}.csv"))
-        labeled_data_test = pd.read_csv(f"data/{device}_{data_associations_dict[device]['freq']}MHz_res_usage_data_test_pred_{model}.csv")
+        data_associations_dict[device]['train_data'][model] = (pd.read_csv(f"data/{device.split('_')[0]}/{device}_{data_associations_dict[device]['freq']}MHz_res_usage_data_train_pred_{model}.csv"))
+        labeled_data_test = pd.read_csv(f"data/{device.split('_')[0]}/{device}_{data_associations_dict[device]['freq']}MHz_res_usage_data_test_pred_{model}.csv")
         data_associations_dict[device]['test_data'][model] = (labeled_data_test[lookback:]) # remove lookback section
 #%%
 """Training Classification Accuracy"""
