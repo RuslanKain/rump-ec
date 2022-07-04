@@ -7,7 +7,38 @@ from statistics import mean
 from sklearn.preprocessing import MinMaxScaler
 import seaborn as sns
 from json import loads
+
+from scipy.ndimage.filters import uniform_filter1d
+import os
 #%%
+def plot_pred_obs(pred_data, obs_data, title, unit, type, rpi, method, filter, save = False):
+  fig = plt.figure()
+  ax = fig.add_subplot(111)
+  ax.plot(pred_data,label = 'Predicted', color = 'red')
+  ax.plot(obs_data,label = 'Observed', color = 'blue')
+  ax.set_title(method +' - '+ title)#, color = 'white')
+  ax.grid()
+  ax.legend(loc='best')
+  #ax.tick_params(axis='x', colors='white')
+  #ax.tick_params(axis='y', colors='white')
+  #ax.yaxis.label.set_color('white')
+  #ax.xaxis.label.set_color('white')
+  ax.set_xlabel('Datapoint')#, color = 'white')
+  ax.set_ylabel(unit)#, color = 'white')
+  if save == True:
+    if filter == 1:
+      f_path = 'Non Filtered'
+    else:
+      f_path = 'Filtered'
+    plt_name = title.replace(" ", "_")
+    try:
+      os.makedirs(r"figures/{}/{}/{}/{} Step/{}".format(type,rpi,method,lookahead,f_path))
+    except:
+      pass
+    save_path = r"figures/{}/{}/{}/{} Step/{}/{}_{}step_{}ma.png".format(type,rpi,method,lookahead,f_path,plt_name,lookahead,filter) 
+    plt.savefig(save_path)
+  else:
+    plt.show()
 
 def plot_states(colors):
 
@@ -57,6 +88,261 @@ def plot_accuracy_likelihood(prediction_window, rolling_window):
     plt.grid()
     plt.show()
 
+
+def mk_groups(data):
+  try:
+      newdata = data.items()
+  except:
+      return
+
+  thisgroup = []
+  groups = []
+  for key, value in newdata:
+      newgroups = mk_groups(value)
+      if newgroups is None:
+          thisgroup.append((key, value))
+      else:
+          thisgroup.append((key, len(newgroups[-1])))
+          if groups:
+              groups = [g + n for n, g in zip(newgroups, groups)]
+          else:
+              groups = newgroups
+  return [thisgroup] + groups
+
+def add_line(ax, xpos, ypos, plus, minus):
+  line = plt.Line2D([xpos, xpos], [ypos + plus, ypos - minus],
+                    transform=ax.transAxes, color='black')
+  line.set_clip_on(False)
+  ax.add_line(line)
+
+def label_group_bar(ax, mae_data, rmse_data):
+  
+  mae_groups, rmse_groups = mk_groups(mae_data), mk_groups(rmse_data)
+  mae_xy, rmse_xy = mae_groups.pop(), rmse_groups.pop()
+  mae_x, mae_y = zip(*mae_xy)
+  rmse_x, rmse_y = zip(*rmse_xy)
+  mae_ly, rmse_ly = len(mae_y), len(rmse_y)
+  mae_xticks, rmse_xticks = np.arange(1, mae_ly + 1), np.arange(1, mae_ly + 1)
+
+
+  mae_bars = ax.bar(mae_xticks, [np.mean(m_y) for m_y in mae_y], yerr= [np.std(m_y) for m_y in mae_y], align='center',color='limegreen', label = 'MAE', error_kw=dict(lw=3, capsize=4, capthick=3))
+  rmse_bars = ax.bar(rmse_xticks, [np.mean(r_y) for r_y in rmse_y], yerr= [np.std(r_y) for r_y in rmse_y], bottom = [np.mean(m_y) for m_y in mae_y], align='center',color='orange', label = "RMSE", error_kw=dict(lw=3, capsize=8, capthick=3))
+
+  hatches = ['','.','/','\\']*7
+
+  for i in range(len(mae_bars)):
+    mae_bars[i].set(hatch = hatches[i])
+    rmse_bars[i].set(hatch = hatches[i])
+
+  ax.set_xticks(mae_xticks)
+  ax.set_xticklabels(mae_x)
+  ax.set_xlim(.5, mae_ly + .5)
+  ax.yaxis.grid(True)
+
+  scale = 1. / mae_ly
+  for pos in range(mae_ly + 1):
+      add_line(ax, pos * scale, -.05, 0.05, 0)
+  ypos = -.24
+  while mae_groups:
+      group = mae_groups.pop()
+      pos = 0
+      for label, rpos in group:
+          lxpos = (pos + .5 * rpos) * scale
+          if 'step' in label:
+            ax.text(lxpos, ypos, label, ha='center', transform=ax.transAxes)
+          else:
+            ypos = -.24
+            ax.text(lxpos, ypos, label, ha='center', transform=ax.transAxes, rotation=72)
+          add_line(ax, pos * scale, ypos, .25, 0)
+          pos += rpos
+      add_line(ax, pos * scale, ypos, .25, 0)
+      add_line(ax, pos * scale, ypos, .08, .02)
+      ypos -= .06
+
+# %%
+"""Get RUMP or HBPSHPO prediction figures"""
+
+rpi_name = 'RPi4B2GB2_1500' #RPi4B8GB_1800, RPi4B4GB_1500, RPi4B2GB2_1500, RPi4B2GB1_1200
+data_seq = 'pattern' # random, pattern
+data_num = '' # _2, _3, _4
+method = 'HBPSHPO' # HBPSHPO, HSMM
+lookahead_list = [1,2,5,10,15,30,60]
+filter = 25 # 1, 25, 50, 100
+
+for lookahead in lookahead_list:
+  print(f"{method} figures for {rpi_name}_{data_seq}{data_num} for {lookahead} step")
+  model_name = f'{rpi_name}_{data_seq}_{lookahead*5}sec'
+  if method == 'HSMM':
+    obs_dict = pd.read_csv(f"Results/{rpi_name.split('_')[0]}/HSMM_Results_rvp_{data_seq}_48hr{data_num}_1500sec_lb_{lookahead*5}sec_pw.csv")
+  elif method == 'HBPSHPO':
+    obs_dict = pd.read_csv(f"Results/{rpi_name.split('_')[0]}/HBPSHPO_Results_{model_name}.csv")
+
+  user_cpu_obs, user_cpu_pred_obs = [], []
+  system_cpu_obs, system_cpu_pred_obs = [], []
+  idle_cpu_obs, idle_cpu_pred_obs = [], []
+  ram_obs, ram_pred_obs = [], []
+  #label_obs, label_pred_obs = [], []
+  #net_sent_obs, net_sent_pred_obs = [], []
+  
+
+  for i in range(0,len(obs_dict),lookahead):
+    if True:
+      user_cpu_obs.extend(loads(obs_dict['cpu_user_time_diff_observations'][i]))
+      user_cpu_pred_obs.extend(loads(obs_dict['cpu_user_time_diff_predicted_observations'][i]))
+      system_cpu_obs.extend(loads(obs_dict['cpu_system_time_diff_observations'][i]))
+      system_cpu_pred_obs.extend(loads(obs_dict['cpu_system_time_diff_predicted_observations'][i]))
+      idle_cpu_obs.extend(loads(obs_dict['cpu_idle_time_diff_observations'][i]))
+      idle_cpu_pred_obs.extend(loads(obs_dict['cpu_idle_time_diff_predicted_observations'][i]))
+      #net_sent_obs.extend(loads(obs_dict['net_sent_diff_observations'][i]))
+      #net_sent_pred_obs.extend(loads(obs_dict['net_sent_diff_predicted_observations'][i]))
+      ram_obs.extend(loads(obs_dict['memory_observations'][i]))
+      ram_pred_obs.extend(loads(obs_dict['memory_predicted_observations'][i]))
+      #label_obs.extend(loads(obs_dict['label_observations'][i]))
+      #label_pred_obs.extend(loads(obs_dict['label_predicted_observations'][i]))
+    else:
+      user_cpu_obs.extend(obs_dict['cpu_user_time_diff_observations'][i])
+      user_cpu_pred_obs.extend(obs_dict['cpu_user_time_diff_predicted_observations'][i])
+      system_cpu_obs.extend(obs_dict['cpu_system_time_diff_observations'][i])
+      system_cpu_pred_obs.extend(obs_dict['cpu_system_time_diff_predicted_observations'][i])
+      idle_cpu_obs.extend(obs_dict['cpu_idle_time_diff_observations'][i])
+      idle_cpu_pred_obs.extend(obs_dict['cpu_idle_time_diff_predicted_observations'][i])
+      #net_sent_obs.extend(obs_dict['net_sent_diff_observations'][i])
+      #net_sent_pred_obs.extend(obs_dict['net_sent_diff_predicted_observations'][i])
+      ram_obs.extend(obs_dict['memory_observations'][i])
+      ram_pred_obs.extend(obs_dict['memory_predicted_observations'][i])
+      #label_obs.extend(obs_dict['label_observations'][i])
+      #label_pred_obs.extend(obs_dict['label_predicted_observations'][i])
+    
+  # change last arg to True to save figures
+  plot_pred_obs(uniform_filter1d(user_cpu_pred_obs, size=filter),uniform_filter1d(user_cpu_obs, size=filter) , 'CPU User Time', 'Seconds', data_seq + data_num, rpi_name.split('_')[0], method, filter, False)
+  plot_pred_obs(uniform_filter1d(system_cpu_pred_obs, size=filter), uniform_filter1d(system_cpu_obs, size=filter) , 'CPU System Time', 'Seconds', data_seq + data_num, rpi_name.split('_')[0], method, filter, False)
+  plot_pred_obs(uniform_filter1d(idle_cpu_pred_obs, size=filter), uniform_filter1d(idle_cpu_obs, size=filter), 'CPU Idle Time', 'Seconds', data_seq + data_num, rpi_name.split('_')[0], method, filter, False)
+  plot_pred_obs(uniform_filter1d(ram_pred_obs, size=filter), uniform_filter1d(ram_obs, size=filter), 'RAM', 'Memory (%)', data_seq + data_num, rpi_name.split('_')[0], method, filter, False)
+  #plot_pred_obs(uniform_filter1d(net_sent_pred_obs, size=filter) , uniform_filter1d(net_sent_obs, size=filter), 'Network Upload', 'Bytes', method, filter, True)
+
+# %%
+"""Get RUMP vs HBPSHPO Error figures"""
+rpi_name = 'RPi4B2GB1_1200' #RPi4B8GB_1800, RPi4B4GB_1500, RPi4B2GB2_1500, RPi4B2GB1_1200
+rpi_name_list = ['RPi4B8GB_1800', 'RPi4B4GB_1500', 'RPi4B2GB2_1500', 'RPi4B2GB1_1200']
+data_seq = 'random' # random, pattern
+data_seq_list = ['random','pattern']
+data_num = '' # _2, _3, _4
+
+lookahead_list = [1,2,5,10,15,30,60]
+HSMM_error_list, HBPSHPO_error_list = [], []
+
+
+HSMM_columns = ['cpu_user_time_diff_mae','cpu_user_time_diff_rmse','cpu_system_time_diff_mae','cpu_system_time_diff_rmse','cpu_idle_time_diff_mae','cpu_idle_time_diff_rmse','memory_mae','memory_rmse']
+HBPSHPO_columns = ['User CPU mae','User CPU rmse','System CPU mae','System CPU rmse','Idle CPU mae','Idle CPU rmse','RAM mae','RAM rmse']
+Resources = {'User CPU Time (sec.)':['cpu_user_time_diff_mae','cpu_user_time_diff_rmse','User CPU mae','User CPU rmse'],
+             'System CPU Time (sec.)':['cpu_system_time_diff_mae','cpu_system_time_diff_rmse','System CPU mae','System CPU rmse'],
+             'Idle CPU Time (sec.)':['cpu_idle_time_diff_mae','cpu_idle_time_diff_rmse', 'Idle CPU mae','Idle CPU rmse'],
+             'Memory Percent Usage':['memory_mae','memory_rmse','RAM mae','RAM rmse']}
+
+mae_data_dict_full, rmse_data_dict_full = {}, {}
+
+for res in Resources:
+  mae_data_dict, rmse_data_dict = {}, {}
+  
+
+  for lookahead in lookahead_list:
+
+    mae_data_dict[f"{lookahead} step"] = {'RUMP': {'R':[],'P':[]}, 'HBPSHPO':{'R':[],'P':[]}}
+    rmse_data_dict[f"{lookahead} step"] = {'RUMP': {'R':[],'P':[]}, 'HBPSHPO':{'R':[],'P':[]}}
+
+    for rpi_name in rpi_name_list:
+
+      for data_seq in data_seq_list:
+
+        
+
+        #print(f"Error figures for {rpi_name}_{data_seq}{data_num} for {lookahead} step")
+
+        model_name = f'{rpi_name}_{data_seq}_{lookahead*5}sec'
+
+        HSMM_temp = pd.read_csv(f"Results/{rpi_name.split('_')[0]}/HSMM_Error_Results_rvp_{data_seq}_48hr{data_num}_1500sec_lb_{lookahead*5}sec_pw.csv")
+        HBPSHPO_temp = pd.read_csv(f"Results/{rpi_name.split('_')[0]}/HBPSHPO_Error_Results_{model_name}.csv")
+
+        if data_seq == 'random':
+          data_seq = 'R'
+        elif data_seq == 'pattern':
+          data_seq = 'P'
+
+        mae_data_dict[f"{lookahead} step"]['RUMP'][data_seq].append(HSMM_temp[Resources[res][0]][0])
+        mae_data_dict[f"{lookahead} step"]['HBPSHPO'][data_seq].append(HBPSHPO_temp[Resources[res][2]][0])
+        rmse_data_dict[f"{lookahead} step"]['RUMP'][data_seq].append(HSMM_temp[Resources[res][1]][0])
+        rmse_data_dict[f"{lookahead} step"]['HBPSHPO'][data_seq].append(HBPSHPO_temp[Resources[res][3]][0])
+
+
+      #mae_data_dict[f"{lookahead} step"]['HDP-HSMM'] = {k:float(sum(v))/len(v) for k, v in mae_data_dict[f"{lookahead} step"]['HDP-HSMM'].items()}
+      #mae_data_dict[f"{lookahead} step"]['HBPSHPO'] = {k:float(sum(v))/len(v) for k, v in mae_data_dict[f"{lookahead} step"]['HBPSHPO'].items()}
+      #rmse_data_dict[f"{lookahead} step"]['HDP-HSMM'] = {k:float(sum(v))/len(v) for k, v in rmse_data_dict[f"{lookahead} step"]['HDP-HSMM'].items()}
+      #rmse_data_dict[f"{lookahead} step"]['HBPSHPO'] = {k:float(sum(v))/len(v) for k, v in rmse_data_dict[f"{lookahead} step"]['HBPSHPO'].items()}
+
+  plt.rcParams.update({'font.size': 40})  
+  fig = plt.figure(figsize=(24,24))
+  ax = fig.add_subplot(1,1,1)
+  ax.set_title(res)
+  label_group_bar(ax, mae_data_dict, rmse_data_dict)
+  plt.legend(loc='best')
+  plt.grid(lw=3,ls='--', c='grey', axis='y')
+  fig.subplots_adjust(bottom=0.3)
+  
+  if res == 'User CPU Time (sec.)':
+    plt.yticks(np.arange(0, 12, 1))
+  elif res == 'System CPU Time (sec.)':
+    plt.yticks(np.arange(0, 1.1, 0.1))
+  elif res == 'Idle CPU Time (sec.)':
+    plt.yticks(np.arange(0, 12, 1))
+  elif res == 'Memory Percent Usage':
+    plt.yticks(np.arange(0, 16, 1))
+  
+  #uncomment to save figures
+  #fig.savefig(r"figures/{} Error Plot.png".format(res))
+  plt.show()
+
+  mae_data_dict_full[res] = mae_data_dict
+  rmse_data_dict_full[res] = rmse_data_dict
+
+# %%
+"""Plot RUMP vs HBPSHPO Error difference Box-Plots"""
+r_mae_percent, r_rmse_percent, p_mae_percent, p_rmse_percent = [], [], [], []
+for (res1, mae_data), (res2, rmse_data) in zip(mae_data_dict_full.items(), rmse_data_dict_full.items()):
+  #print(res1)
+  for lookahead in lookahead_list:
+    #print('lookahead', lookahead)
+    #for model in ['HDP-HSMM', 'HBPSHPO']:
+    #  print(model)
+    for data_type in ['R','P']:
+      #print(data_type)
+      if data_type == 'R':
+        r_mae_percent.append(100 * (np.mean(mae_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(mae_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(mae_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
+        r_rmse_percent.append(100 * (np.mean(rmse_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type])) /np.mean(rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
+      elif data_type == 'P':
+        p_mae_percent.append(100 * (np.mean(mae_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(mae_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(mae_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
+        p_rmse_percent.append(100 * (np.mean(rmse_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type])) /np.mean(rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
+      
+
+fig = plt.figure(figsize =(10, 8))
+ax = fig.add_subplot(111)
+plt.rcParams.update({'font.size': 18}) 
+
+boxprops = dict(linewidth=3)
+medianprops = dict(linewidth=3, color='red')
+meanlineprops = dict(linewidth=3, color='blue')
+whiskerprops = dict(linewidth=3)
+capprops = dict(linewidth=3)
+#flierprops= dict(markersize=15, linewidth = 3)
+
+plt.boxplot([r_mae_percent,p_mae_percent,r_rmse_percent,p_rmse_percent],showmeans=True, showfliers = False, meanline=True, medianprops=medianprops, meanprops=meanlineprops, boxprops=boxprops, whiskerprops = whiskerprops, capprops = capprops)
+ax.set_xticklabels(['Random MAE', 'Patterned MAE', 'Random RMSE', 'Patterned RMSE'])
+plt.ylabel('Percent Differrence')
+plt.tight_layout()
+plt.grid()
+plt.yticks(np.arange(-30, 175, 10))
+plt.show()
+
+# %%
 
 #%%
 
