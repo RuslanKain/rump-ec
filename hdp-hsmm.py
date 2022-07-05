@@ -61,7 +61,7 @@ class SemiMarkov():
     
     def save_model(self, model, kappa, iter, fig = 'save'):
 
-        with open('HSMM_Models/{}_{}_{}_{}kap_{}iter.pickle'.format(device_name,feature_names,model_name,kappa, iter),'wb') as outfile:
+        with open('HSMM_Models/{}/{}_{}_{}_{}kap_{}iter.pickle'.format(device_name.split('_')[0],device_name,feature_names,model_name,kappa, iter),'wb') as outfile:
             pickle.dump(model,outfile,protocol=-1)
             
         fig = plt.figure()
@@ -75,7 +75,7 @@ class SemiMarkov():
         
         
         if fig == 'save':
-            plt.savefig('figures/HSMM/{}_{}_{}_{}kap_{}iter.png'.format(device_name,feature_names,model_name, kappa, iter))
+            plt.savefig('figures/{}_{}_{}_{}kap_{}iter.png'.format(device_name,feature_names,model_name, kappa, iter))
         else:
             plt.show()
 
@@ -219,15 +219,15 @@ class SemiMarkov():
         num_list = ''
         
         for dataset_name in dataset_name_list:
-            prep_data_list.append(pd.read_csv('data/{}_res_usage_data_{}.csv'.format(device_name,dataset_name), index_col = 'time_stamp'))
+            prep_data_list.append(pd.read_csv('data/{}/{}_res_usage_data_{}.csv'.format(device_name.split('_')[0],device_name,dataset_name), index_col = 'time_stamp'))
         
-        return self.merge_datasets(True, 'data/{}_res_usage_data_{}.csv'.format(device_name, new_name), prep_data_list)
+        return self.merge_datasets(True, 'data/{}/{}_res_usage_data_{}.csv'.format(device_name.split('_')[0],device_name, new_name), prep_data_list)
 
     def preprocess_data(self, device_name, freq, data_name):
         """Preprocessing labeled data"""
 
         #Read Data, create difference feature, and clean nans
-        labeled_data = pd.read_csv(f'data/{device_name}_{freq}MHz_res_usage_data_{data_name}.csv', index_col = 'time_stamp')
+        labeled_data = pd.read_csv(f"data/{device_name.split('_')[0]}/{device_name}_{freq}MHz_res_usage_data_{data_name}.csv", index_col = 'time_stamp')
         labeled_data = SM.df_col_diff(labeled_data, diff_columns)
         labeled_data = labeled_data.fillna(0)
 
@@ -401,45 +401,47 @@ class SemiMarkov():
 
 
 #%% 
-    
+"""Designate model generation dataset"""    
 SM = SemiMarkov()
 
 features = ['cpu_user_time_diff','cpu_system_time_diff','cpu_idle_time_diff','memory']#,'net_sent_diff']
 diff_columns = ['cpu_user_time', 'cpu_system_time','cpu_idle_time', 'net_sent', 'net_recv', 'io_counters_read_count_', 'io_counters_write_count_', 'io_counters_read_bytes_', 'io_counters_write_bytes_','io_counters_read_chars_', 'io_counters_write_chars_', 'cpu_times_user_','cpu_times_system_', 'cpu_times_children_user_', 'cpu_times_children_system_']
 
-device_name = 'RPi4B4GB'
-freq = 1500
+device_name = 'RPi4B8GB' #RPi4B8GB, RPi4B4GB, RPi4B2GB2, RPi4B2GB1
+freq = 1800 # 1800, 1500, 1500, 1200
 feature_names = 'cpu-all_mem'
 progprint = 400
 #model_count = 4
 model_index = 3
-model_name = 'rvp_pattern_48hr_3'
+model_name = 'rvp_random_48hr'
 
 lookback = 300
 
 #%%
+"""Pre-process Data"""
 data_name = model_name
 prediction_windows = [1,2,5,10,15,30,60]
 labeled_data_train, labeled_data_test = SM.preprocess_data(device_name, freq, data_name)
 #%%
 """Generates HSMM Model"""
 kappa_1 = 0.05
-model, state_sequences, true_labels, states  = SM.run_HSMM(labeled_data_train, device_name, features, feature_names, model_name, {}, extra_states = 1, kappa = kappa_1, progprint_xrange_var = progprint, fig = 'save')
-SM.save_model(model,'save')
+model, state_sequences, true_labels, states  = SM.run_HSMM(labeled_data_train, features,extra_states = 1, kappa = kappa_1, progprint_xrange_var = progprint)
+#SM.save_model(model,'save')                   
 #%%
 """Generates HSMM Model using Grid Search"""
-model, state_sequences, true_labels, states = SM.grid_search([2], [0.1,0.1,0.1], [800], "don't save fig")
+model, state_sequences, true_labels, states = SM.grid_search([2], [0.1,0.1,0.1], [800], "don't save fig") # number of extra states, kappa, number of sampling iterations
 
 #%%
 """Reads previously generated model and extracts it"""
-model_path = 'HSMM_Models/{}_{}_{}_{}kap_{}iter.pickle'.format(device_name, feature_names, model_name,0.1,800)
+model_path = 'HSMM_Models/{}/{}_{}_{}_{}kap_{}iter.pickle'.format(device_name.split('_')[0],device_name, feature_names, model_name,0.1,800)
 
 model, state_sequences, true_labels = SM.get_HSMM_state_seq(labeled_data_train, model_path, device_name)
 
 #%%
+"""Place Modeled Hidden-States"""
 labeled_data_train['predicted'] = state_sequences[0]
 #%%
-"""Training"""
+"""Training Accuracy"""
 Labels = {}
 Accuracies = []
 
@@ -451,7 +453,7 @@ for name,group in labeled_data_train.groupby('state'):
     Accuracies.append(label.max())
 
 #%%
-
+"""Create multi-step labels"""
 labeled_data_train['label'] = labeled_data_train['state'].map(Labels)
 labeled_data_test['label'] = labeled_data_test['state'].map(Labels)
 #create rolling window for prediction evaluations
@@ -461,8 +463,9 @@ for pw in prediction_windows:
 
 
 #%%
+"""Save pre-processed Dataset"""
 test_name = data_name
-labeled_data_train.to_csv(f"data/{device_name}_{freq}MHz_res_usage_data_train_pred_{test_name}.csv")
+labeled_data_train.to_csv(f"data/{device_name.split('_')[0]}/{device_name}_{freq}MHz_res_usage_data_train_pred_{test_name}.csv")
 
 #%%
 """Prepares test data, predictions start after lookback period"""
@@ -584,26 +587,27 @@ for prediction_window in prediction_windows:
         save_dict[feature+'_mae'] = [round(mean_absolute_error(observs_list,pred_observs_list),3)]
         save_dict[feature+'_rmse'] = [round(sqrt(mean_squared_error(observs_list,pred_observs_list)),3)]
     
-    pd.DataFrame(save_dict).to_csv('Results/HSMM_Error_Results_{}_{}sec_lookbk_{}sec_pred_window.csv'.format(device_name,lookback*5,prediction_window*5))
+    pd.DataFrame(save_dict).to_csv('Results/{}/HSMM_Error_Results_{}_{}sec_lookbk_{}sec_pred_window.csv'.format(device_name.split('_')[0],device_name,lookback*5,prediction_window*5))
 
-
+    read_flag = 0
     print("Done!")
 
 
 #%%
-"""Testing"""
+"""Testing Accuracy"""
 for name,group in labeled_data_test.groupby('state'):
     print(name)
     print(labeled_data_test[lookback:].groupby('state').get_group(name)[f'predicted states - {1} step'].value_counts(normalize=True))
 #%%
 """Save test predictons"""
 test_name = data_name
-labeled_data_test.to_csv(f"data/{device_name}_{freq}MHz_res_usage_data_test_pred_{test_name}.csv")
+labeled_data_test.to_csv(f"data/{device_name.split('_')[0]}/{device_name}_{freq}MHz_res_usage_data_test_pred_{test_name}.csv")
 
 #%%
 """Read test predictions"""
 test_name = data_name
-labeled_data_test = pd.read_csv(f"data/{device_name}_{freq}MHz_res_usage_data_test_pred_{test_name}.csv")
+labeled_data_test = pd.read_csv(f"data/{device_name.split('_')[0]}/{device_name}_{freq}MHz_res_usage_data_test_pred_{test_name}.csv")
+read_flag = 1
 
 #%%
 """remove lookback section"""
@@ -616,9 +620,13 @@ plt.rc('font', **{'weight' : 'bold', 'size'   : 18})
 for prediction_window in prediction_windows:
     accuracy, conf_matrix = [], []
     for index, row in labeled_data_test.iterrows():
-        accuracy.append(accuracy_score(row[f'label - {prediction_window} step'], row[f'predicted states - {prediction_window} step'])*100)
-        conf_matrix.append(multilabel_confusion_matrix(row[f'label - {prediction_window} step'], row[f'predicted states - {prediction_window} step'], labels=labeled_data_test['label'].unique().tolist()))
-
+        if read_flag == 0:
+            accuracy.append(accuracy_score(row[f'label - {prediction_window} step'], row[f'predicted states - {prediction_window} step'])*100)
+            conf_matrix.append(multilabel_confusion_matrix(row[f'label - {prediction_window} step'], row[f'predicted states - {prediction_window} step'], labels=labeled_data_test['label'].unique().tolist()))
+        else:
+            accuracy.append(accuracy_score(loads(row[f'label - {prediction_window} step']), loads(row[f'predicted states - {prediction_window} step']))*100)
+            conf_matrix.append(multilabel_confusion_matrix(loads(row[f'label - {prediction_window} step']), loads(row[f'predicted states - {prediction_window} step']), labels=labeled_data_test['label'].unique().tolist()))
+        
     labeled_data_test[f'accuracy - {prediction_window} step'] = accuracy
     labeled_data_test[f'confusion matrix - {prediction_window} step'] = conf_matrix
    
@@ -632,5 +640,5 @@ for prediction_window in prediction_windows:
 
 #%%
 """Reads previously generated results"""
-results = pd.read_csv('Results/HSMM_Results_{}_{}sec_lookbk_{}sec_pred_window.csv'.format(device_name,lookback*5,prediction_window*5))
+results = pd.read_csv('Results/{}/HSMM_Results_{}_{}sec_lookbk_{}sec_pred_window.csv'.format(device_name.split('_')[0],device_name,lookback*5,prediction_window*5))
 
