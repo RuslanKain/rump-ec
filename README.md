@@ -40,6 +40,11 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 |     `Dinner` |        4.5       |     66    |   `Streaming` |   <img src="figures/Stream.gif" width="30%" align='right'/>  |
 |     `Midnight Snack`    |     9.2    |    11     |   `Gaming`   |   <img src="figures/Game.gif" width="30%" align='right'/>   |
 
+</td><td>
+
+<!---->
+
+<!--   <img src="images/veh2.jpg" width="50%" /> -->
 
 </td></tr> </table>
 
