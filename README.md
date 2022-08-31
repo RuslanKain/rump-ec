@@ -32,7 +32,7 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 <tr><td>
 
 |       Time      |       CPU Time (%)     |    Memory (%)    |    QOS (sec)    | Resource Usage State     |   Visualization |
-|:----------------:|:-----------------:|:---------------:| :---------------:|  :---------------:|
+|:----------------:|:-----------------:|:---------------:| :---------------:|  :---------------:|  :---------------:|
 |    `Breakfast`    |        .6       |   33   |    1.2   |   `Idle`   |   |
 |     `Second Breakfast`    |        12.3       |   44    |    3.5   | `Augmented Reality` | <img src="figures/AR on RPi 400.gif" width="30%"/> |
 |     `Lunch`     |        15.6       |    55    |    4.1   | `Crypto Mining` |  <img src="figures/Mining.gif" width="30%"/> |
