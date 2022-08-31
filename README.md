@@ -11,15 +11,20 @@
 
 
 ## Data
-May be accessed on <a href="https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP3/GOZAJE">[Borealis]</a></div>
+May be accessed on [Borealis](https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP3/GOZAJE)
   
-## Web Demo
 
-- Integrated into [Huggingface Spaces 🤗](https://huggingface.co/spaces/hank1996/yolopv2) using Gradio. Try out the Web Demo !
+### Description
+
+It's about computer stuff
+  
+### Experimental Setup
+
+Raspberry Pis Man
 
 ### Visualization
-model : trained on the BDD100k dataset and test on T3CAIC camera.
-<td><img src=data/demo/together_video.gif/></td>
+
+<td><img src=figures/source.png/></td>
   
   
 
