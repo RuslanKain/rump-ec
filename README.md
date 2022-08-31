@@ -28,15 +28,15 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 ### Descriptive Sample
 
 <table>
-<tr><th>Dataset </th></tr>
+<tr><th>Dataset </th><th> </th></tr>
 <tr><td>
 
 |       Time      |       CPU Time (%)     |    Memory (%     |  Resource Usage State     |   Visualization |
-|:----------------:|:-----------------:|:---------------:| :---------------:|  :---------------:||
-|    `Breakfast`    |        .6       |   33   |   `Idle`   ||
+|:----------------:|:-----------------:|:---------------:| :---------------:|  :---------------:|
+|    `Breakfast`    |        .6       |   33   |   `Idle`   |   |
 |     `Second Breakfast`    |        12.3       |   44    | `Augmented Reality` | <img src="figures/AR on RPi 400.gif" width="30%" align='right'/> |
 |     `Lunch`     |        15.6       |    55    | `Crypto Mining` |  <img src="figures/Mining.gif" width="30%" align='right'/> |
-|      `Supper`     |        0.5       |    66    |  `Idle` ||
+|      `Supper`     |        0.5       |    66    |  `Idle` |   |
 |     `Dinner` |        4.5       |     66    |   `Streaming` |   <img src="figures/Stream.gif" width="30%" align='right'/>  |
 |     `Midnight Snack`    |     9.2    |    11     |   `Gaming`   |   <img src="figures/Game.gif" width="30%" align='right'/>   |
 
@@ -44,7 +44,7 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 
 <!---->
 
-<!--   <img src="images/veh2.jpg" width="50%" /> -->
+<!--  -->
 
 </td></tr> </table>
 
