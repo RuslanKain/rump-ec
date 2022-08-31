@@ -31,22 +31,24 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 <tr><th>Result </th><th>Visualization</th></tr>
 <tr><td>
 
-|       Time      |       CPU Time (%)     |    Memory (%     |  State     |
+|       Time      |       CPU Time (%)     |    Memory (%     |  REsource Usage State     |
 |:----------------:|:-----------------:|:---------------:| :---------------:|
-|    `Breakfast`    |        3.6       |   33   |   `Idle` |
+|    `Breakfast`    |        .6       |   33   |   `Idle` |
 |     `Second Breakfast`    |        12.3       |   44    | `Augmented Reality` |
-|     `Lunch`     |        89.6       |    55    | `Crypto Mining` |
-|      `Supper`     |        91.5       |    66    |  `Idle` |
-|     `Dinner` |        90.5       |     66    |   `Streaming` |
-|     `Midnight Snack`    |     93.2    |    11     |   `Gaming` |
+|     `Lunch`     |        15.6       |    55    | `Crypto Mining` |
+|      `Supper`     |        0.5       |    66    |  `Idle` |
+|     `Dinner` |        4.5       |     66    |   `Streaming` |
+|     `Midnight Snack`    |     9.2    |    11     |   `Gaming` |
 
  
   
 </td><td>
 
 <!-- ### Visualization -->
-<img src="figures/source.png" width="100%" align='right'/>
-<!--   <img src="figures/source.png" width="50%" /> -->
+<img src="figures/Game.gif" width="100%" align='right'/>
+  <img src="figures/Mining.gif" width="100%" align='right'/>
+  <img src="figures/Stream.gif" width="100%" align='right'/>
+<!--   <img src="Mulstiple" width="50%" /> -->
   
   
 
