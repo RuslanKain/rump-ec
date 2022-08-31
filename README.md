@@ -25,10 +25,8 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 <td><img src=figures/RPis.jpg/></td>
 
 
-### Drivable Area Segmentation
-<table>
+### Descriptive Sample
 
- <tr><th>Result </th> <tr>
 
 |       Time      |       CPU Time (%)     |    Memory (%     |  Resource Usage State     |   Visualization |
 |:----------------:|:-----------------:|:---------------:| :---------------:|  :---------------:||
@@ -41,6 +39,6 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 
  
   
-</td><td>
+
 
 
