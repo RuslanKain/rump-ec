@@ -16,15 +16,37 @@ May be accessed on [Borealis](https://borealisdata.ca/dataset.xhtml?persistentId
 
 ### Description
 
-It's about computer stuff
+The collection and construction of this dataset were organized by the Queen's Telecommunications Research Lab (TRL) and led by Ruslan Kain, a Ph.D. student at TRL. The dataset includes dynamic resource usage information associated with running edge-native applications on a set of four heterogeneous Single Board Computers.
   
 ### Experimental Setup
 
-Raspberry Pis Man
+Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencies of 1200, 1500, 1500, and 1800 MHz. This is to establish heterogeneity of the devices used and collected data and to enable data-based applications for Edge Computing Research. The resource usage measurements have a five-second granularity. We managed to collect more than 550 thousand unique data points representing the 768 hours of running applications on Raspberry Pi Devices
 
-### Visualization
+<td><img src=figures/RPis.jpg/></td>
 
-<td><img src=figures/source.png/></td>
+
+### Drivable Area Segmentation
+<table>
+
+<tr><th>Result </th><th>Visualization</th></tr>
+<tr><td>
+
+|       Time      |       CPU Time (%)     |    Memory (%     |  State     |
+|:----------------:|:-----------------:|:---------------:| :---------------:|
+|    `Breakfast`    |        3.6       |   33   |   `Idle` |
+|     `Second Breakfast`    |        12.3       |   44    | `Augmented Reality` |
+|     `Lunch`     |        89.6       |    55    | `Crypto Mining` |
+|      `Supper`     |        91.5       |    66    |  `Idle` |
+|     `Dinner` |        90.5       |     66    |   `Streaming` |
+|     `Midnight Snack`    |     93.2    |    11     |   `Gaming` |
+
+ 
+  
+</td><td>
+
+<!-- ### Visualization -->
+<img src="figures/source.png" width="100%" align='right'/>
+<!--   <img src="figures/source.png" width="50%" /> -->
   
   
 
