@@ -31,14 +31,14 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 <tr><th>Result </th><th>Visualization</th></tr>
 <tr><td>
 
-|       Time      |       CPU Time (%)     |    Memory (%     |  Resource Usage State     |
-|:----------------:|:-----------------:|:---------------:| :---------------:|
-|    `Breakfast`    |        .6       |   33   |   `Idle`   |
-|     `Second Breakfast`    |        12.3       |   44    | `Augmented Reality` |
-|     `Lunch`     |        15.6       |    55    | `Crypto Mining` |
-|      `Supper`     |        0.5       |    66    |  `Idle` |
-|     `Dinner` |        4.5       |     66    |   `Streaming` |
-|     `Midnight Snack`    |     9.2    |    11     |   `Gaming` <img src="figures/Game.gif" width="40%" align='right'/> |
+|       Time      |       CPU Time (%)     |    Memory (%     |  Resource Usage State     |   Visualization |
+|:----------------:|:-----------------:|:---------------:| :---------------:|  :---------------:||
+|    `Breakfast`    |        .6       |   33   |   `Idle`   ||
+|     `Second Breakfast`    |        12.3       |   44    | `Augmented Reality` | <img src="figures/AR on RPi 400.gif" width="100%" align='right'/> |
+|     `Lunch`     |        15.6       |    55    | `Crypto Mining` |  <img src="figures/Mining.gif" width="100%" align='right'/> |
+|      `Supper`     |        0.5       |    66    |  `Idle` ||
+|     `Dinner` |        4.5       |     66    |   `Streaming` |   <img src="figures/Stream.gif" width="100%" align='right'/>  |
+|     `Midnight Snack`    |     9.2    |    11     |   `Gaming`   |   <img src="figures/Game.gif" width="40%" align='right'/>   |
 
  
   
@@ -46,9 +46,9 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 
 <!-- ### Visualization -->
 
-  <img src="figures/Mining.gif" width="100%" align='right'/>
-  <img src="figures/Stream.gif" width="100%" align='right'/>
-  <img src="figures/AR on RPi 400.gif" width="100%" align='right'/>
+  
+  
+  
 <!--   <img src="Mulstiple" width="50%" /> -->
   
   
