@@ -43,13 +43,13 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 </td></tr> </table>
 
 ### Augmented Reality
-<td><img src='figures/AR on RPi 400.gif' width="50%" align="center"/></td>
+<td><img src='figures/AR on RPi 400.gif' width="40%"/></td>
 
 ### Dunio Coin Mining
-<td><img src=figures/Mining.gif/></td>
+<td><img src=figures/Mining.gif width="40%"/></td>
 
 ### Youtube Streaming
-<td><img src=figures/Stream.gif/></td>
+<td><img src=figures/Stream.gif width="40%"/></td>
 
 ### Gaming
-<td><img src=figures/Game.gif/></td>
+<td><img src=figures/Game.gif width="40%"/></td>
