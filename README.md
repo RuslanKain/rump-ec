@@ -4,7 +4,7 @@
 </font></span> -->
   
   Ruslan Kain, Sara A. Elsayed, Yuanzhu Chen, Hossam Hassanein 
-<!-- <a href="[https://scholar.google.com/citations?user=pCY-bikAAAAJ&hl=zh-CN](https://www.researchgate.net/publication/363157892_Multi-step_Prediction_of_Worker_Resource_Usage_at_the_Extreme_Edge)">Ruslan Kain</a> -->
-<div><a href="https://arxiv.org/abs/2208.11434">[RUMP Research Gate Preprint]</a></div> 
+<!-- <a href="[https://scholar.google.com/RUMP)">Ruslan Kain</a> -->
+<div><a href="[https://arxiv.org/abs/2208.11434](https://www.researchgate.net/publication/363157892_Multi-step_Prediction_of_Worker_Resource_Usage_at_the_Extreme_Edge)">[RUMP Research Gate Preprint]</a></div> 
 
 </div>
