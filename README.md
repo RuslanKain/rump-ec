@@ -20,9 +20,7 @@ The collection and construction of this dataset were organized by the Queen's Te
   
 ### Experimental Setup
 
-Four Raspberry Pi 4 devices have 2, 4, and 8 GB RAM sizes, and CPU frequencies of 1200, 1500, and 1800 MHz. This is to establish heterogeneity of the devices used and collected data and to enable data-based applications for Edge Computing Research. The resource usage measurements have a five-second granularity. We managed to collect more than 550 thousand unique data points representing the 768 hours of running applications on Raspberry Pi Devices
-
-### Visualization
+Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencies of 1200, 1500, 1500, and 1800 MHz. This is to establish heterogeneity of the devices used and collected data and to enable data-based applications for Edge Computing Research. The resource usage measurements have a five-second granularity. We managed to collect more than 550 thousand unique data points representing the 768 hours of running applications on Raspberry Pi Devices
 
 <td><img src=figures/RPis.jpg/></td>
   
