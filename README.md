@@ -45,8 +45,8 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 </td><td>
 
 <!-- ### Visualization -->
-<img src="data/demo/fs3.jpg" width="100%" align='right'/>
-<!--   <img src="ifigures/source.png" width="50%" /> -->
+<img src="figures/source.png" width="100%" align='right'/>
+<!--   <img src="figures/source.png" width="50%" /> -->
   
   
 
