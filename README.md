@@ -27,6 +27,9 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 
 ### Descriptive Sample
 
+<table>
+<tr><th>Dataset </th></tr>
+<tr><td>
 
 |       Time      |       CPU Time (%)     |    Memory (%     |  Resource Usage State     |   Visualization |
 |:----------------:|:-----------------:|:---------------:| :---------------:|  :---------------:||
@@ -38,7 +41,9 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 |     `Midnight Snack`    |     9.2    |    11     |   `Gaming`   |   <img src="figures/Game.gif" width="30%" align='right'/>   |
 
  
-  
+  </td><td>
+
+
 
 
 
