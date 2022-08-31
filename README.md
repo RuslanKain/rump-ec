@@ -23,6 +23,30 @@ The collection and construction of this dataset were organized by the Queen's Te
 Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencies of 1200, 1500, 1500, and 1800 MHz. This is to establish heterogeneity of the devices used and collected data and to enable data-based applications for Edge Computing Research. The resource usage measurements have a five-second granularity. We managed to collect more than 550 thousand unique data points representing the 768 hours of running applications on Raspberry Pi Devices
 
 <td><img src=figures/RPis.jpg/></td>
+
+
+### Drivable Area Segmentation
+<table>
+
+<tr><th>Result </th><th>Visualization</th></tr>
+<tr><td>
+
+|       Time      |       CPU Time (%)     |    Memory (%     |  State     |
+|:----------------:|:-----------------:|:---------------:| :---------------:|
+|    `Breakfast`    |        3.6       |   33   |   'Idle` |
+|     `Second Breakfast`    |        12.3       |   44    | 'Augmented Reality` |
+|     'Lunch`     |        89.6       |    55    | 'Crypto Mining` |
+|      'Supper`     |        91.5       |    66    |  'Idle` |
+|     `Dinner` |        90.5       |     66    | |  'Streaming` |
+|     `Midnight Snack`    |     93.2    |    11     | |  'Gaming` |
+
+ 
+  
+</td><td>
+
+<!-- ### Visualization -->
+<img src="data/demo/fs3.jpg" width="100%" align='right'/>
+<!--   <img src="ifigures/source.png" width="50%" /> -->
   
   
 
