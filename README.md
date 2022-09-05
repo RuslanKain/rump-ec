@@ -47,3 +47,11 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 |:----------------------------:|:---------------------------:|:-----------------------:| :----------------:|
 | <img src='figures/AR on RPi 400.gif' width="100%"/>   | <img src=figures/Mining.gif width="100%"/> | <img src=figures/Stream.gif width="100%"/> | <img src=figures/Game.gif width="100%"/>  |
 
+
+### Demo Test
+
+We provide two testing method.You can store the image or video.
+
+```shell
+python fun-time.py
+```
