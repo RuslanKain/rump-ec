@@ -10,7 +10,7 @@
 </div>
 
 
-## Data may additionally be accessed on [Borealis](https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP3/GOZAJE)
+## Data may also be accessed on [Borealis](https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP3/GOZAJE)
   
 
 ### Description
