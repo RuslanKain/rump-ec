@@ -21,9 +21,11 @@ The collection and construction of this dataset were organized by the Queen's Te
 
 Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencies of 1200, 1500, 1500, and 1800 MHz. This is to establish heterogeneity of the devices used and collected data and to enable data-based applications for Edge Computing Research. The resource usage measurements have a five-second granularity. We managed to collect more than 550 thousand unique data points representing the 768 hours of running applications on Raspberry Pi Devices.
 
-### Raspberry Pis.
+
 
 <div align="center">
+  
+### Raspberry Pis  
 <table>
 <tr><th> Worker specifications and labels </th></tr>
 <tr><td>
@@ -39,7 +41,7 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 </td></tr> </table>
 
 <td><img src=figures/RPis.jpg/></td>
-</div>
+
 
 ### Descriptive Sample
 
@@ -64,7 +66,7 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 |:----------------------------:|:---------------------------:|:-----------------------:| :----------------:|
 | <img src='figures/AR on RPi 400.gif' width="100%"/>   | <img src=figures/Mining.gif width="100%"/> | <img src=figures/Stream.gif width="100%"/> | <img src=figures/Game.gif width="100%"/>  |
 
-
+</div>
 ### Demo Test
 
 We provide two testing method.You can store the image or video.
