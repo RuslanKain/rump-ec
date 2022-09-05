@@ -23,6 +23,7 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 
 ### Raspberry Pis.
 
+<div align="center">
 <table>
 <tr><th> Worker specifications and labels </th></tr>
 <tr><td>
@@ -38,7 +39,7 @@ Four Raspberry Pi 4 devices have 2, 2, 4, and 8 GB RAM sizes, and CPU frequencie
 </td></tr> </table>
 
 <td><img src=figures/RPis.jpg/></td>
-
+</div>
 
 ### Descriptive Sample
 
