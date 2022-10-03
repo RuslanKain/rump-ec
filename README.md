@@ -11,7 +11,9 @@
 
 
 ## Data may also be accessed on [Borealis](https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP3/GOZAJE)
-  
+ 
+# Citation: Kain, Ruslan; Elsayed, Sara A.; Chen, Yuanzhu; Hassanein, Hossam S., 2022, "Resource Usage of Applications Running on Raspberry Pi Devices", https://doi.org/10.5683/SP3/GOZAJE, Borealis, V1, UNF:6:FjVtgSYUu2Iy08LQ2ra6fQ== [fileUNF]
+
 
 ### Description
 
