@@ -17,7 +17,7 @@ Citation: Kain, Ruslan; Elsayed, Sara A.; Chen, Yuanzhu; Hassanein, Hossam S., 2
 
 ### Description
 
-The collection and construction of this dataset were organized by the Queen's Telecommunications Research Lab (TRL) and led by Ruslan Kain, a Ph.D. student at TRL. The dataset includes dynamic resource usage information associated with running edge-native applications on a set of four heterogeneous Single Board Computers.
+The collection and construction of this dataset were organized by the Queen's Telecommunications Research Lab (TRL) and led by Ruslan Kain, a Ph.D. student at Queen's School of Computing. The dataset includes dynamic resource usage information associated with running edge-native applications on a set of four heterogeneous Single Board Computers.
   
 ### Experimental Setup
 
