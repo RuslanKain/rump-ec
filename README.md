@@ -5,7 +5,7 @@
   
   Ruslan Kain, Sara A. Elsayed, Yuanzhu Chen, Hossam Hassanein 
 <!-- <a href="https://dl.acm.org/doi/abs/10.1145/3551659.3559051">Ruslan Kain</a> -->
-<div><a href="https://dl.acm.org/doi/abs/10.1145/3551659.3559051>[Multi-step Prediction of Worker Resource Usage at the Extreme Edge]</a></div> 
+<div><a href="https://dl.acm.org/doi/abs/10.1145/3551659.3559051">[Multi-step Prediction of Worker Resource Usage at the Extreme Edge]</a></div> 
 
 </div>
 
