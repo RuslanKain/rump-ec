@@ -152,15 +152,34 @@ def label_group_bar(ax, mae_data, rmse_data):
   mae_ly, rmse_ly = len(mae_y), len(rmse_y)
   mae_xticks, rmse_xticks = np.arange(1, mae_ly + 1), np.arange(1, mae_ly + 1)
 
+  color_pair1 = ['#aaffc3', '#8B3A3A']  # color pair 1:  Mint, Apricot: #ffd8b1, Blueviolet: #8A2BE2
+  color_pair2 = ['#458B74','#FF6A6A']  # color pair 2: Teal, Beige: #fffac8, Pink: #fabed4
 
-  mae_bars = ax.bar(mae_xticks, [np.mean(m_y) for m_y in mae_y], yerr= [np.std(m_y) for m_y in mae_y], align='center',color='green', label = 'MAE', error_kw=dict(lw=3, capsize=4, capthick=3))
-  rmse_bars = ax.bar(rmse_xticks, [np.mean(r_y) for r_y in rmse_y], yerr= [np.std(r_y) for r_y in rmse_y], bottom = [np.mean(m_y) for m_y in mae_y], align='center',color='orange', label = "RMSE", error_kw=dict(lw=3, capsize=8, capthick=3))
 
-  hatches = ['','//','O','.']*7
+  # define list of dark colors
+  # https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
+  rmse_bars = ax.bar(rmse_xticks+0.14, [np.mean(r_y) for r_y in rmse_y], yerr= [np.std(r_y) for r_y in rmse_y], width=0.65, align='center', error_kw=dict(lw=4, capsize=8, capthick=3))
+  mae_bars = ax.bar(mae_xticks-0.14, [np.mean(m_y) for m_y in mae_y], yerr= [np.std(m_y) for m_y in mae_y], width=0.65, align='center', error_kw=dict(lw=4, capsize=8, capthick=3))
+  
+  hatches = ['','///']*14
+
+  count = 0
 
   for i in range(len(mae_bars)):
-    mae_bars[i].set(hatch = hatches[i],edgecolor='black')
-    rmse_bars[i].set(hatch = hatches[i],edgecolor='black')
+    count += 1
+    if count == 1 or count == 2:
+        mae_bars[0].set(label = 'MAE  - RUMP')
+        mae_bars[i].set(hatch=hatches[i], facecolor=color_pair1[1]) # edgecolor='black'
+        rmse_bars[0].set(label = 'RMSE  - RUMP')
+        rmse_bars[i].set(hatch=hatches[i], facecolor=color_pair2[1])
+    else:
+        mae_bars[2].set(label = 'MAE  - HBPSHPO')
+        mae_bars[i].set(hatch=hatches[i],  facecolor=color_pair2[0])
+        rmse_bars[2].set(label = 'RMSE  - HBPSHPO')
+        rmse_bars[i].set(hatch=hatches[i], facecolor=color_pair1[0])
+        if count == 4:
+           count = 0
+
 
   ax.set_xticks(mae_xticks)
   ax.set_xticklabels(mae_x)
@@ -354,60 +373,153 @@ for res in Resources:
   fig.subplots_adjust(bottom=0.3)
   
   if res == 'User CPU Time (sec.)':
-    plt.yticks(np.arange(0, 12, 1))
+    plt.yticks(np.arange(0, 8, 1))
   elif res == 'System CPU Time (sec.)':
-    plt.yticks(np.arange(0, 1.1, 0.1))
+    plt.yticks(np.arange(0, 0.7, 0.1))
   elif res == 'Idle CPU Time (sec.)':
-    plt.yticks(np.arange(0, 12, 1))
+    plt.yticks(np.arange(0, 8, 1))
   elif res == 'Memory Percent Usage':
-    plt.yticks(np.arange(0, 16, 1))
-  
-  #uncomment to save figures
-  #fig.savefig(r"figures/{} Error Plot.png".format(res))
+    plt.yticks(np.arange(0, 11, 1))
+  fig.savefig(r"figures/{} Error Plot.png".format(res))
   plt.show()
 
   mae_data_dict_full[res] = mae_data_dict
   rmse_data_dict_full[res] = rmse_data_dict
 
 # %%
-"""Plot RUMP vs HBPSHPO Error difference Box-Plots"""
+
 r_mae_percent, r_rmse_percent, p_mae_percent, p_rmse_percent = [], [], [], []
 for (res1, mae_data), (res2, rmse_data) in zip(mae_data_dict_full.items(), rmse_data_dict_full.items()):
-  #print(res1)
-  for lookahead in lookahead_list:
-    #print('lookahead', lookahead)
-    #for model in ['HDP-HSMM', 'HBPSHPO']:
-    #  print(model)
-    for data_type in ['R','P']:
-      #print(data_type)
-      if data_type == 'R':
-        r_mae_percent.append(100 * (np.mean(mae_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(mae_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(mae_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
-        r_rmse_percent.append(100 * (np.mean(rmse_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type])) /np.mean(rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
-      elif data_type == 'P':
-        p_mae_percent.append(100 * (np.mean(mae_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(mae_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(mae_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
-        p_rmse_percent.append(100 * (np.mean(rmse_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type])) /np.mean(rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
-      
+    for lookahead in lookahead_list:
+        for data_type in ['R', 'P']:
+            if data_type == 'R':
+                r_mae_percent.append(100 * (np.mean(mae_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(
+                    mae_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(
+                    mae_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
+                r_rmse_percent.append(100 * (np.mean(rmse_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(
+                    rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(
+                    rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
+            elif data_type == 'P':
+                p_mae_percent.append(100 * (np.mean(mae_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(
+                    mae_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(
+                    mae_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
+                p_rmse_percent.append(100 * (np.mean(rmse_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(
+                    rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(
+                    rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
 
-fig = plt.figure(figsize =(10, 8))
+fig = plt.figure(figsize=(10, 8))
 ax = fig.add_subplot(111)
-plt.rcParams.update({'font.size': 18}) 
+plt.rcParams.update({'font.size': 18})
 
-boxprops = dict(linewidth=3)
-medianprops = dict(linewidth=3, color='red',label='Median')
-meanlineprops = dict(linewidth=3, color='blue',label='Mean')
-whiskerprops = dict(linewidth=3)
-capprops = dict(linewidth=3)
-#flierprops= dict(markersize=15, linewidth = 3)
+boxprops = dict(linewidth=4)
+medianprops = dict(linewidth=5, color='#458B74')
+meanlineprops = dict(linewidth=5, color='#FF6A6A')
+whiskerprops = dict(linewidth=4)
+capprops = dict(linewidth=4)
 
-plt.boxplot([r_mae_percent,p_mae_percent,r_rmse_percent,p_rmse_percent],showmeans=True, showfliers = False, meanline=True, medianprops=medianprops, meanprops=meanlineprops, boxprops=boxprops, whiskerprops = whiskerprops, capprops = capprops)
+box_plot_data = [r_mae_percent, p_mae_percent, r_rmse_percent, p_rmse_percent]
+box_plot_colors = ['#aaffc3', '#8B3A3A', '#458B74', '#FF6A6A']
+
+bp = plt.boxplot(box_plot_data, showmeans=True, showfliers=False, meanline=True, patch_artist=True,
+                 medianprops=medianprops, meanprops=meanlineprops, boxprops=boxprops, whiskerprops=whiskerprops,
+                 capprops=capprops)
+
+for patch, color in zip(bp['boxes'], box_plot_colors):
+    patch.set_facecolor("#FFF8DC")
+
 ax.set_xticklabels(['Random MAE', 'Patterned MAE', 'Random RMSE', 'Patterned RMSE'])
-plt.ylabel('Percent Differrence')
+plt.ylabel('Percent Difference')
 plt.tight_layout()
-plt.grid()
-plt.legend(loc='best', numpoints=2)
-plt.yticks(np.arange(-30, 175, 10))
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.yticks(np.arange(-30, 175, 20))
+
+
+# Add legend for median and mean lines
+mean_line = plt.Line2D([], [], color='#FF6A6A', linestyle='--', linewidth=5, label='Mean')
+median_line = plt.Line2D([], [], color='#458B74', linestyle='-', linewidth=5, label='Median')
+plt.legend(handles=[mean_line, median_line], loc='upper left', fontsize=18)
+
 plt.show()
 
+# %%
+"""Plot RUMP vs HBPSHPO Error difference Violin Plots"""
+r_mae_percent, r_rmse_percent, p_mae_percent, p_rmse_percent = [], [], [], []
+for (res1, mae_data), (res2, rmse_data) in zip(mae_data_dict_full.items(), rmse_data_dict_full.items()):
+    for lookahead in lookahead_list:
+        for data_type in ['R', 'P']:
+            if data_type == 'R':
+                r_mae_percent.append(100 * (np.mean(mae_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(
+                    mae_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(
+                    mae_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
+                r_rmse_percent.append(100 * (np.mean(rmse_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(
+                    rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(
+                    rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
+            elif data_type == 'P':
+                p_mae_percent.append(100 * (np.mean(mae_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(
+                    mae_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(
+                    mae_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
+                p_rmse_percent.append(100 * (np.mean(rmse_data[f"{lookahead} step"]['RUMP'][data_type]) - np.mean(
+                    rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type])) / np.mean(
+                    rmse_data[f"{lookahead} step"]['HBPSHPO'][data_type]))
+
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111)
+plt.rcParams.update({'font.size': 18})
+
+violin_plot_data = [r_mae_percent, p_mae_percent, r_rmse_percent, p_rmse_percent]
+violin_plot_colors = ['#aaffc3', '#8B3A3A', '#458B74', '#FF6A6A']
+
+vp = ax.violinplot(violin_plot_data)
+
+for i, body in enumerate(vp['bodies']):
+    body.set_facecolor(violin_plot_colors[i])
+    body.set_edgecolor('black')
+    body.set_linewidth(2)
+    body.set_alpha(0.5)
+    #change 
+
+# Add mean and median lines
+for i, data in enumerate(violin_plot_data):
+    x = i + 1
+    mean = np.mean(data)
+    median = np.median(data)
+    ax.plot([x - 0.15, x + 0.15], [mean, mean], color='#8B0A50', linestyle='-', linewidth=3)
+    ax.plot([x - 0.15, x + 0.15], [median, median], color='#2F4F4F', linestyle='-', linewidth=3)
+
+# Customize quartile lines
+for i in range(len(violin_plot_data)):
+    quartiles = np.percentile(violin_plot_data[i], [0.001, 99.999])
+    ax.vlines(i + 1, quartiles[0], quartiles[1], color='black', linewidth=2)
+    ax.hlines(quartiles, i + 1 - 0.2, i + 1 + 0.2, color='black', linewidth=2)
+
+ax.set_xticks([1, 2, 3, 4])
+ax.set_xticklabels(['Random MAE', 'Patterned MAE', 'Random RMSE', 'Patterned RMSE'])
+plt.ylabel('Percent Difference')
+plt.tight_layout()
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.yticks(np.arange(-30, 200, 20))
+
+# Add annotations for the first violin chart
+hbposhpo_annotation = 'HBPSHPO'
+rump_annotation = 'RUMP'
+first_violin_max = np.max(r_mae_percent)
+first_violin_min = np.min(r_mae_percent)
+
+ax.annotate(hbposhpo_annotation, xy=(1, first_violin_max), xytext=(1.15, first_violin_max + 7),
+            arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=7), fontsize=18)
+
+ax.annotate(rump_annotation, xy=(1, first_violin_min), xytext=(1.15, first_violin_min - 9),
+            arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=7), fontsize=18)
+
+
+# Add legend for median and mean lines
+mean_line = plt.Line2D([], [], color='#8B0A50', linestyle='-', linewidth=3, label='Mean')
+median_line = plt.Line2D([], [], color='#2F4F4F', linestyle='-', linewidth=3, label='Median')
+plt.legend(handles=[mean_line, median_line], loc='upper left', fontsize=18)
+
+
+
+plt.show()
 #%%
 
 
@@ -477,8 +589,8 @@ for device in data_associations_dict:
                     accuracy.append(accuracy_score(loads(row[f'label - {prediction_window} step']), loads(row[f'predicted states - {prediction_window} step']))*100)
                 else:
                     accuracy.append(accuracy_score(row[f'label - {prediction_window} step'], row[f'predicted states - {prediction_window} step'])*100)
-            data_associations_dict[device]['test_data'][model][f'accuracy - {prediction_window} step'] = accuracy
-            mean_accuracy = round(mean(accuracy),2)
+            data_associations_dict[device]['test_data'][model][f'accuracy - {prediction_window} step'] = accuracy.copy()
+            mean_accuracy = round(np.mean(accuracy),2)
             test_accuracy[device][model].append(mean_accuracy)
             print(f"{prediction_window} step prediction accuracy: {mean_accuracy}%")
             #plot_accuracy_likelihood(prediction_window, 100)
@@ -511,8 +623,8 @@ for device in test_accuracy:
 
     plt.plot(prediction_windows,[(r1 + r2) / 2 for r1, r2 in zip(test_random_1, test_random_2)], marker='o',label = 'random - test')
     plt.plot(prediction_windows,[(p1 + p2) / 2 for p1, p2 in zip(test_pattern_1, test_pattern_2)], marker='o',label = 'pattern - test')
-    plt.axhline(mean(train_states_random_1)*100,label='random - train')
-    plt.axhline(mean(train_states_pattern_1)*100,color='orange',label='pattern - train')
+    plt.axhline(np.mean(train_states_random_1)*100,label='random - train')
+    plt.axhline(np.mean(train_states_pattern_1)*100,color='orange',label='pattern - train')
     plt.legend(loc='best')
     plt.ylabel('% Accuracy')
     plt.xlabel('Steps')
@@ -554,4 +666,125 @@ for device in test_accuracy:
     #fig.tight_layout()
 
     plt.show()
+# %%
+
+# %%
+
+def get_label(old_label):
+
+    if old_label == 'random':
+        return'Random'
+    elif old_label == 'pattern':
+        return'Pattern'
+    elif old_label == 'RPi4B8GB':
+        return'A'
+    elif old_label == 'RPi4B4GB':
+        return'B'
+    elif old_label == 'RPi4B2GB2':
+        return'C'
+    elif old_label == 'RPi4B2GB1':
+        return'D'
+
+
+def get_color(dev):
+    # '#aaffc3', '#8B3A3A', '#458B74', '#FF6A6A'
+    if dev == 'RPi4B8GB': 
+        return '#aaffc3'
+    elif dev == 'RPi4B4GB':
+        return '#8B3A3A'
+    elif dev == 'RPi4B2GB2':
+        return '#458B74'
+    elif dev == 'RPi4B2GB1':    
+        return '#FF6A6A'
+    
+
+import matplotlib.pyplot as plt
+
+prediction_windows = [1,2,5,10,15,30,60]
+sequence_type = ['random', 'pattern']
+sq_test_accuracies, sq_train_accuracies = [], []
+for sq_type in sequence_type:
+    
+    fig, ax = plt.subplots(figsize =(8, 6))
+    plt.rcParams.update({'font.size': 14})
+    test_accuracyies_list, train_accuracyies_list = [], []
+    for device in test_accuracy:
+        
+        
+        
+        for model in test_accuracy[device]:
+            if sq_type in model and '2' not in model:
+                test_1 = test_accuracy[device][model]
+                test_states_1 = test_accuracy_states[device][model]
+                train_states_1 = train_accuracy_states[device][model]
+            elif sq_type in model and '2' in model and '2GB1' not in device:
+                test_2 = test_accuracy[device][model]
+                test_states_2 = test_accuracy_states[device][model]
+                train_states_2 = train_accuracy_states[device][model]
+            elif sq_type in model and '3' in model and '2GB1' in device:
+                test_2 = test_accuracy[device][model]
+                test_states_2 = test_accuracy_states[device][model]
+                train_states_2 = train_accuracy_states[device][model]
+
+        print(f'{device}_{data_associations_dict[device]["freq"]}')
+
+        
+        #print('Avg')
+        
+        plt.plot(prediction_windows,[(t1 + t2) / 2 for t1, t2 in zip(test_1, test_2)], marker='o', markersize = 8, color = get_color(device) , linewidth = 2, linestyle = '--', label = f'{get_label(device)}  - Test')
+        test_accuracyies_list.append([(t1 + t2) / 2 for t1, t2 in zip(test_1, test_2)])
+        plt.axhline(np.mean([(ts1 + ts2) / 2 for ts1, ts2 in zip(train_states_1, train_states_2)])*100, linewidth = 2, color = get_color(device),label= f'{get_label(device)} - Train')
+        train_accuracyies_list.append(np.mean([(ts1 + ts2) / 2 for ts1, ts2 in zip(train_states_1, train_states_2)])*100)
+
+    plt.legend(loc='center right')
+    plt.ylabel('Percent Accuracy')
+    plt.xlabel('Steps')
+    #plt.title(get_label(sq_type) + ' State Sequence')
+    plt.grid()
+    plt.yticks(np.arange(50, 105, 5))
+    plt.xticks(prediction_windows)
+    plt.setp(ax.xaxis.get_majorticklabels()[0],ha="right" )
+    plt.setp(ax.xaxis.get_majorticklabels()[1:],ha="left" )
+    
+    plt.show() 
+    print(sq_type, ' average train accuracy')
+    print(sum(train_accuracyies_list) / len(train_accuracyies_list))
+    sq_train_accuracies.append(sum(train_accuracyies_list) / len(train_accuracyies_list))
+
+    print(sq_type, ' average test accuracy')
+    print([sum(acc_sub_list) / len(acc_sub_list) for acc_sub_list in zip(*test_accuracyies_list)])
+    sq_test_accuracies.append([sum(acc_sub_list) / len(acc_sub_list) for acc_sub_list in zip(*test_accuracyies_list)])
+    """
+    print('1')
+    plt.plot(prediction_windows,test_1, marker='o', markersize = 8 , linewidth = 3, color ='limegreen', label = f'{get_label(device)} - {get_label(sq_type)} - Test')
+    plt.axhline(mean(train_states_1)*100, linewidth = 3, color ='orange',label= f'{get_label(device)} - {get_label(sq_type)} - Train')
+    plt.legend(loc='upper right')
+    plt.ylabel('Percent Accuracy')
+    plt.xlabel('Steps')
+    plt.grid()
+    plt.yticks(np.arange(50, 105, 5))
+    plt.xticks(prediction_windows)
+    plt.show() 
+
+    print('2')
+    plt.plot(prediction_windows,test_2, linewidth = 3, color ='orange',label= f'{get_label(device)} - {get_label(sq_type)} - Train')
+    plt.axhline(mean(train_states_1)*100, linewidth = 3, color ='orange',label= f'{get_label(device)} - {get_label(sq_type)} - Train')
+    plt.legend(loc='upper right')
+    plt.ylabel('Percent Accuracy')
+    plt.xlabel('Steps')
+    plt.grid()
+    plt.xticks(prediction_windows)
+    plt.yticks(np.arange(50, 105, 5))
+    plt.show()
+
+    """
+
+
+print('overall average train accuracy')
+print(sum(sq_train_accuracies) / len(sq_train_accuracies))
+   
+
+print('overall average test accuracy')
+print([sum(acc_sub_list) / len(acc_sub_list) for acc_sub_list in zip(*sq_test_accuracies)])
+   
 # %%
