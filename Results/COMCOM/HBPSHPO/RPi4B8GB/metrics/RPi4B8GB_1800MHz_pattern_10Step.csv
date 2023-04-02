@@ -1,0 +1,5 @@
+Resource,Score,RMSE,MAE,MAPE,SMAPE,Training time,Mean Inference time,Max Inference time,Min Inference time
+cpu_user_time_diff,0.964,1.304,0.75,74.72,35.41,0,0,0,0
+cpu_system_time_diff,0.729,0.257,0.156,68.95,45.4,0,0,0,0
+cpu_idle_time_diff,0.963,1.301,0.758,31.94,16.8,0,0,0,0
+memory,0.818,1.068,0.691,5.73,5.88,0,0,0,0
