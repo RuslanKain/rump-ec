@@ -1,0 +1,2 @@
+cpu_user_time_diff_MAE,cpu_user_time_diff_RMSE,cpu_user_time_diff_MAPE,cpu_user_time_diff_SMAPE,cpu_system_time_diff_MAE,cpu_system_time_diff_RMSE,cpu_system_time_diff_MAPE,cpu_system_time_diff_SMAPE,cpu_idle_time_diff_MAE,cpu_idle_time_diff_RMSE,cpu_idle_time_diff_MAPE,cpu_idle_time_diff_SMAPE,memory_MAE,memory_RMSE,memory_MAPE,memory_SMAPE
+2.714,2.714,52.07,70.4,1.366,1.366,26.49,30.54,0.439,0.439,8.49,8.14,3.101,3.101,59.8,85.3

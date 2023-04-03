@@ -1,0 +1,2 @@
+,cpu_user_time_diff_mae,cpu_user_time_diff_rmse,cpu_system_time_diff_mae,cpu_system_time_diff_rmse,cpu_idle_time_diff_mae,cpu_idle_time_diff_rmse,memory_mae,memory_rmse
+0,1.027,2.271,0.22,0.394,1.251,2.7,2.388,3.929
