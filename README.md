@@ -2,7 +2,7 @@
   <h1>RUMP: Resource Usage Multi-Step Prediction</h1>
   
   <p>
-    <img src="path/to/testbed.jpg" alt="RUMP Update Banner" width="600"/>
+    <img src="path/to/setup-image.jpg" alt="RUMP Update Banner" width="600"/>
   </p>
 
   <p><strong>Update:</strong> New experimental data has been collected as part of recently completed work Thesis work. A comprehensive, reproducible dataset and framework repository will be made public soon.</p>
