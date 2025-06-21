@@ -1,11 +1,12 @@
 <div align="center">
-  <h1>RUMP: Resource Usage Multi-Step Prediction</h1>
-  
+
+  <p><strong>Update:</strong> New experimental data has been collected as part of recently completed work Thesis work. A comprehensive, reproducible dataset and framework repository will be made public soon.</p>
+
   <p>
     <img src="figures/setup-image.jpg" alt="RUMP Update Banner" width="600"/>
   </p>
-
-  <p><strong>Update:</strong> New experimental data has been collected as part of recently completed work Thesis work. A comprehensive, reproducible dataset and framework repository will be made public soon.</p>
+  
+  <h1>RUMP: Resource Usage Multi-Step Prediction</h1>
   
   <p>Ruslan Kain, Sara A. Elsayed, Yuanzhu Chen, Hossam Hassanein</p>
 
