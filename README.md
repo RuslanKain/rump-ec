@@ -5,7 +5,7 @@
     <img src="path/to/new_photo.jpg" alt="RUMP Update Banner" width="600"/>
   </p>
 
-  <p><strong>Update:</strong> New experimental data has been collected as part of ongoing work in predictive resource modeling at the extreme edge. A comprehensive, reproducible dataset and updated repository will be made public soon.</p>
+  <p><strong>Update:</strong> New experimental data has been collected as part of recently completed work Thesis work. A comprehensive, reproducible dataset and framework repository will be made public soon.</p>
   
   <p>Ruslan Kain, Sara A. Elsayed, Yuanzhu Chen, Hossam Hassanein</p>
 
