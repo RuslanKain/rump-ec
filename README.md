@@ -1,13 +1,21 @@
 <div align="center">
-<h1> RUMP: Resource Usage Multi-Step Prediciton</h1>
-<!-- <--!span><font size="5", > Multi-Step Prediciton of Worker Resource Usage at the Extreme Edge
-</font></span> -->
+  <h1>RUMP: Resource Usage Multi-Step Prediction</h1>
   
-  Ruslan Kain, Sara A. Elsayed, Yuanzhu Chen, Hossam Hassanein 
-<!-- <a href="https://dl.acm.org/doi/abs/10.1145/3551659.3559051">Ruslan Kain</a> -->
-<div><a href="https://dl.acm.org/doi/abs/10.1145/3551659.3559051">[Multi-step Prediction of Worker Resource Usage at the Extreme Edge]</a></div> 
+  <p>
+    <img src="path/to/new_photo.jpg" alt="RUMP Update Banner" width="600"/>
+  </p>
 
+  <p><strong>Update:</strong> New experimental data has been collected as part of ongoing work in predictive resource modeling at the extreme edge. A comprehensive, reproducible dataset and updated repository will be made public soon.</p>
+  
+  <p>Ruslan Kain, Sara A. Elsayed, Yuanzhu Chen, Hossam Hassanein</p>
+
+  <div>
+    <a href="https://dl.acm.org/doi/abs/10.1145/3551659.3559051">
+      [Multi-step Prediction of Worker Resource Usage at the Extreme Edge]
+    </a>
+  </div>
 </div>
+
 
 
 ## Data may also be accessed on [Borealis](https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP3/GOZAJE)
