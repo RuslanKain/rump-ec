@@ -17,7 +17,11 @@
       [Multi-step Prediction of Worker Resource Usage at the Extreme Edge]
     </a>
   </div>
+  <p>
+    <img width="2427" height="1330" alt="image" src="https://github.com/user-attachments/assets/28abef43-1054-422e-8511-8821390ef36d" />
+  </p>
 </div>
+
 
 
 
