@@ -39,8 +39,6 @@ Citations:
 
 - Kain, Ruslan; Elsayed, Sara A.; Chen, Yuanzhu; Hassanein, Hossam S., 2022, "Resource Usage of Applications Running on Raspberry Pi Devices", https://doi.org/10.5683/SP3/GOZAJE, Borealis, V1, UNF:6:FjVtgSYUu2Iy08LQ2ra6fQ== [fileUNF]
 - R. Kain, S. A. Elsayed, Y. Chen and H. S. Hassanein, "DRUDGE: Dynamic Resource Usage Data Generation for Extreme Edge Devices," GLOBECOM 2023 - 2023 IEEE Global Communications Conference, Kuala Lumpur, Malaysia, 2023, pp. 5342-5347, doi: 10.1109/GLOBECOM54140.2023.10437760.
-- - https://scholar.google.com/citations?view_op=view_citation&hl=en&user=prqcEmEAAAAJ&citation_for_view=prqcEmEAAAAJ:zYLM7Y9cAGgC
-
 
 
 ### Description
