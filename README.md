@@ -1,7 +1,9 @@
 <div align="center">
 
   <p><strong>Update:</strong> New experimental data has been collected as part of recently completed work Thesis work. A comprehensive, reproducible dataset and framework repository will be made public soon.</p>
-
+  <p>
+    <img width="1091" height="720" alt="image" src="https://github.com/user-attachments/assets/7a7345ce-f736-4ad4-8e46-1869a633f037" />
+  </p>
   <p>
     <img src="figures/setup-image.jpg" alt="RUMP Update Banner" width="600"/>
   </p>
