@@ -2,6 +2,10 @@
 
   <p><strong>Update:</strong> New experimental data has been collected as part of recently completed work Thesis work. A comprehensive, reproducible dataset and framework repository will be made public soon.</p>
 
+
+  <img width="1091" height="720" alt="image" src="https://github.com/user-attachments/assets/d2f0728d-7aee-4c70-9167-f77180442a4f" />
+
+  
   <p>
     <img src="figures/setup-image.jpg" alt="RUMP Update Banner" width="600"/>
   </p>
